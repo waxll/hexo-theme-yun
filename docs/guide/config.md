@@ -614,7 +614,7 @@ font:
   cdn:
     enable: true
     lib:
-      - https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&family=Source+Code+Pro&display=swap
+      - https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap
   serif:
     family: "'Songti SC', 'Noto Serif SC', STZhongsong, STKaiti, KaiTi, Roboto, serif"
     weight: 900
@@ -1019,6 +1019,7 @@ title: 一级标题
 - `max_depth`: 生成 TOC 的最大深度
 - `min_depth`: 生成 TOC 的最小深度
 - `placeholder`: 当目录不存在时，显示的话。
+- `collapse`: 是否折叠目录（默认折叠，即隐藏次级目录，滚到到相关位置时才展开）
 
 ```yaml
 toc:
@@ -1026,6 +1027,7 @@ toc:
   max_depth: 6
   min_depth: 1
   placeholder: 很遗憾，咱没写啥目录
+  collapse: false
 ```
 
 > [辅助函数 ｜ Hexo](https://hexo.io/zh-cn/docs/helpers#toc)
@@ -1050,38 +1052,40 @@ post_edit:
 
 设置代码高亮
 
-由于性能问题，抛弃 `highlight.js` ，使用 [prism](https://github.com/PrismJS/prism)。
+由于性能及定位问题，且 [Hexo 5.0](https://blog.skk.moe/post/hexo-5/) 已原生支持 prism，本主题更推荐使用 [prismjs](https://github.com/PrismJS/prism) 而非 `highlight.js`。
 
-请参考 [hexo-prism-plugin](https://github.com/ele828/hexo-prism-plugin) 使用。
+> 请升级 Hexo 至 5.0。`npm install hexo@latest`
 
-等待 [Hexo 5.0.0 Roadmap](https://github.com/hexojs/hexo/issues/4002) 原生支持 Prism 。
+PrismJS 是一个轻量级的代码高亮库，相比 highlight.js，prismjs 可以在 Node.js 环境执行（即：可在 Hexo 生成页面时进行代码高亮）。
+
+我们可以通过 CDN 快速切换主题，本主题也支持为亮暗模式设置不同的代码高亮主题。
 
 > 当前 Prism 支持的语言：<https://prismjs.com/#supported-languages>
 
-```sh
-npm install hexo-prism-plugin
-```
-
-在 Hexo 工作目录下的 `_config.yml` 中配置：
+在 Hexo （须升级至 5.0 以上版本）工作目录下的 `_config.yml` 中配置：
 
 ```yaml
-# https://github.com/ele828/hexo-prism-plugin
-prism_plugin:
-  mode: preprocess # realtime/preprocess
-  theme: default
-  line_number: false # default false
-  # custom_css: "path/to/your/custom.css" # optional
-```
-
-关闭 Hexo 自带的 `highlight`（此处在 Hexo 工作目录的 `_config.yml` 中）
-
-```yaml
+# 关闭 highlight
 highlight:
   enable: false
+# 启用 prism
+prismjs:
+  enable: true
+  preprocess: true
+  line_number: false
+  tab_replace: ""
+```
+
+在 `yun.yml` 中：
+
+```yaml
+codeblock:
+  prismjs:
+    light: default
+    dark: tomorrow
 ```
 
 > 建议关闭行号，[这里](https://highlightjs.readthedocs.io/en/latest/line-numbers.html)是 highlight 作者写的为什么 highlight 不支持行号。
-> hexo-prism-plugin 开启行号后，也会存在样式上的些许不协调。
 > 行号是否存在影响不大，当去掉时可以节约出一部分空间，譬如一些原先需要滚动条的代码，去掉后，就可以完全显示出来。
 
 ### 版权
@@ -1127,7 +1131,7 @@ lazyload:
 
 ## 打赏
 
-开启后，将在每篇文章或页面末尾显示打赏按钮。
+开启后，将在每篇文章 `post` 末尾显示打赏按钮。（`page` 页面默认不显示，你需要设置 `reward: true` 以强制打开。）
 
 - `enable`: 开启打赏
 - `icon`: 打赏图标
